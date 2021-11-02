@@ -52,6 +52,8 @@ void insertBST(bst* tree, int data){
     insertHelper(tree->root, data);
 }
 
+
+
 void printBSTPreorder(node* node){
   if(node == NULL) return; //nothing here
   
@@ -89,6 +91,72 @@ void printBST(bst* tree, void (*order)(node*)){
   printf("\n");
 }
 
+node* findmin(node* node){
+  if(node->left == NULL)
+    return node;
+  else
+    return findmin(node->left);
+}
+
+node* searchHelper(node* node, int data){
+  if(node == NULL) return NULL;
+
+  if(node->data == data) return node;
+
+  if(data > node->data)
+    return searchHelper(node->right, data);
+
+  else
+    return searchHelper(node->left, data);
+}
+
+node* searchTree(bst* tree, int data){
+  if(tree->root==NULL) return NULL;
+
+  return searchHelper(tree->root, data);
+}
+
+//4 cases
+//1: No children. Just delete the node
+//2: One left child. Just move up left child.
+//3: One right child. Just move up right child.
+//4: Two right children. Find min of right subtree and swap and delete.
+
+node* deleteHelper(node* node, int data){
+  if(node == NULL) return node;
+
+  if(node->data > data)
+    node->left = deleteHelper(node->left, data);
+  else if(node->data < data)
+    node->right = deleteHelper(node->right, data);
+  else{ //we have our target
+    if(node->left==NULL && node->right==NULL){//no kids
+      free(node);
+      return NULL;
+    } else if(node->left == NULL){//right kid
+      struct node* tmp = node->right;
+      free(node);
+      return tmp; 
+    } else if(node->right == NULL){//left kid
+      struct node* tmp = node->left;
+      free(node);
+      return tmp;
+    } else {//two children
+      //find min of right subtree
+      struct node* min = findmin(node->right);
+      node->data = min->data;
+
+      node->right = deleteHelper(node->right, min->data);
+    }
+  }
+  return node;
+}
+
+void delete(bst* tree, int data){
+  //find node
+  deleteHelper(tree->root, data);
+}
+
 int main(){
   // int arr1[] = {4,5,6,7,1,2,3};
   // int arr2[] = {4,1,2,3,5,6,7};
@@ -100,7 +168,7 @@ int main(){
   int arr2[] = {4,6,5,7,2,3,1};
   int arr3[] = {4,6,7,5,2,1,3};
   int arr4[] = {4,6,2,1,3,5,7};
-  int arr5[] = {4,5,2,1,3,6,7};
+  int arr5[] = {4, 1, 8, 10, 9, 10, 8, 10, 6, 5};
   bst* tree = initBST();
 
   for(int i=0; i < 7; i++) insertBST(tree, arr1[i]);
@@ -118,16 +186,31 @@ int main(){
 
   free(tree);
   tree = initBST();
-  for(int i=0; i < 7; i++) insertBST(tree, arr4[i]);
+  for(int i=0; i < 10; i++) insertBST(tree, arr5[i]);
   printBST(tree, printBSTInorder);
 
-  printf("compare bst sets: %d\n", compareBST(arr1,arr2,7));
-  printf("compare bst sets: %d\n", compareBST(arr1,arr3,7));
-  printf("compare bst sets: %d\n", compareBST(arr1,arr4,7));
-  printf("compare bst sets: %d\n", compareBST(arr2,arr3,7));
-  printf("compare bst sets: %d\n", compareBST(arr2,arr4,7));
-  printf("compare bst sets: %d\n", compareBST(arr3,arr4,7));
-  printf("compare bst sets: %d\n", compareBST(arr1,arr5,7));
+  //bst set compare tests
+  // printf("compare bst sets: %d\n", compareBST(arr1,arr2,7));
+  // printf("compare bst sets: %d\n", compareBST(arr1,arr3,7));
+  // printf("compare bst sets: %d\n", compareBST(arr1,arr4,7));
+  // printf("compare bst sets: %d\n", compareBST(arr2,arr3,7));
+  // printf("compare bst sets: %d\n", compareBST(arr2,arr4,7));
+  // printf("compare bst sets: %d\n", compareBST(arr3,arr4,7));
+  // printf("compare bst sets: %d\n", compareBST(arr1,arr5,7));
+
+  // printf("min of root right sub: %d\n", findmin(tree->root->right)->data);
+  // delete(tree, 4);
+  // printBST(tree,printBSTInorder);
+
+  // delete(tree, 5);
+  // printBST(tree,printBSTInorder);
+
+  // delete(tree, 1);//leaf
+  // printBST(tree,printBSTInorder);
+
+
+  // delete(tree, 2);//leaf
+  // printBST(tree,printBSTInorder);
 }
 
 
@@ -157,26 +240,9 @@ int compareBST(int seq1[], int seq2[], int size){
   return 0;
 }
 
-/* questions
-Are the roots (first thing in the list) equal?
-What is the first thing greater then the root in list A? What is the first thing greater then root in list A'?
-are these 2 things equal? Assume some sentinal value in the case of no match.
-same question for the less than or equal to case.
-
-Now we ask the same question for the left child b of root a that is equal to b'. Keep in mind we only care about the rest of the list
-so we might be able to use pointers.
-
-Basically at each step ask, what are your children? This implies a recursive procedure. Since we never need to modify our list
-its pretty easy to just pass a pointer plus an offset and let it do its thing.
-
-1. check if root a' = a if not return false
-2. find left child of a' and a 
-3. find right child of a' and a
-4. recurse and AND the result of recursing on left and right child.
-
+/* 
 1. if the given lists are empty return true
 2. check the first elements of a the given lists are they equal? If not return false.
 3. take the sets of all elements less than the first and the sets of all elements greater than the first.
 4. recurse twice to. First two check the two lists of left descendents and then to checks the two lists of right descendents.
-
- */
+*/
