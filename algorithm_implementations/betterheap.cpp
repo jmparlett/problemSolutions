@@ -62,7 +62,7 @@ void upheap(heap* H, int pos){
   //if you are root stop
   if(pos-1 < 0) return;
 
-  //if your less than you parent stop
+  //if your greater than you parent stop
   if(H->arr[parent(pos)] <= H->arr[pos]) return;
 
   //else swap with parent and recurse
@@ -74,7 +74,7 @@ void upheapIntArr(int arr[],  int len, int pos){
   //if you are root stop
   if(pos-1 < 0) return;
 
-  //if your less than you parent stop
+  //if your greater than you parent stop
   if(arr[parent(pos)] <= arr[pos]) return;
 
   //else swap with parent and recurse
