@@ -19,6 +19,10 @@ def p1(f):
     print("Final fish count: ",len(lanternschool))
 
 def p2(f):
+    '''
+    googled for this one :(
+    The idea is simply track how many will be generated at each day, then interpret all days as a cycle.
+    '''
     lanternschool = list(map(int,f.readline().split(",")))
 
     fish = [0 for i in range(9)]
