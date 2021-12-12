@@ -1,4 +1,3 @@
-import copy
 def findErrorAlmostRight(line,D):
     # first char in line should be sibling of target
     print(line)
