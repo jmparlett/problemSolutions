@@ -1,0 +1,4 @@
+
+(nm-applet:9319): libnotify-WARNING **: 13:51:47.797: Failed to connect to proxy
+
+(nm-applet:9319): nm-applet-WARNING **: 13:51:57.000: Failed to show notification: Error calling StartServiceByName for org.freedesktop.Notifications: Process org.freedesktop.Notifications exited with status 1
