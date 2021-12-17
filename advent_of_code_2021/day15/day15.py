@@ -22,7 +22,6 @@ def dijkastra(grid):
     while not heap.empty():
         #  print(heap.queue)
         distance,cr,cc= heap.get()
-        #  grid[cr][cc][1]=True # mark as visited
 
         # add neighbors to queue if not visited and update their distance
         for n in getNeighbors(grid,cr,cc):
