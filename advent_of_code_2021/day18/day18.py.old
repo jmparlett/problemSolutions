@@ -1,0 +1,142 @@
+from math import ceil
+
+def getDepth(sn,depth):
+    if isinstance(sn,int):
+        return depth-1
+    else:
+        return max(getDepth(sn[0],depth+1),getDepth(sn[1],depth+1))
+    #  for i in sn:
+        #  if isinstance(i,list):
+            #  return getDepth(i,depth+1)
+    #  return depth
+
+def addtoleftmost(sn,n):
+    if isinstance(sn,int):
+        sn+=n
+    else:
+        sn[1] = addtoleftmost(sn[1],n)
+    return sn
+
+def addtorightmost(sn,n):
+    if isinstance(sn,int):
+        sn+=n
+    else:
+        sn[0] = addtorightmost(sn[0],n)
+    return sn
+   
+def explode(sn,depth):
+    # find a list nested in 4 others and blow it up
+    if depth==3:
+        if isinstance(sn[0],list): # blowing up left
+            lc, rc = sn[0][0],sn[0][1]
+            sn[0]=0
+            # either adding to right of current or left child of current right
+            if isinstance(sn[1],int):
+                sn[1]+=rc
+            else:
+                sn[1][0]+=rc
+            return lc,0,sn
+
+        elif isinstance(sn[1],list): # blowing up right
+            lc, rc = sn[1][0],sn[1][1]
+            sn[1]=0
+            # either adding to left of current or right child of current left
+            if isinstance(sn[0],int):
+                sn[0]+=lc
+            else:
+                sn[0][1]+=lc
+            return 0,rc,sn
+        else: # if none are lists we messed up
+            return 0,0,sn
+        # either left right or both are lists
+        # if I called it on my right child the the right child becomes the list given by the function
+        # and the lc value gets added to my left child (this might be zero), the mirror case is calling in my left child
+    else: # not at suitable depth yet
+        lc = rc = 0
+        if isinstance(sn[0],list):
+            # calling on left
+            lc, rc, sn[0] = explode(sn[0],depth+1)
+            sn[1] = addtorightmost(sn[1],rc)
+            rc=0
+        if isinstance(sn[1],list):
+            # calling on right
+            lc, rc, sn[1] = explode(sn[1],depth+1)
+            sn[0] = addtoleftmost(sn[0],lc)
+            lc=0
+        return lc,rc,sn
+
+def split(sn):
+    # just split one thing and return the modded list
+    wasSplit=False
+    if isinstance(sn[0],int):
+        if sn[0] > 9:
+            sn[0] = [sn[0]//2,ceil(sn[0]/2)]
+            wasSplit=True
+    if isinstance(sn[1],int) and not wasSplit:
+        if sn[1] > 9:
+            sn[1] = [sn[1]//2,ceil(sn[1]/2)]
+            wasSplit=True
+    if isinstance(sn[0],list) and not wasSplit:
+        wasSplit, sn[0] = split(sn[0])
+    if isinstance(sn[1],list) and not wasSplit:
+        wasSplit, sn[1] = split(sn[1])
+    return wasSplit,sn # nothing to split
+
+def reduce(sn):
+    while getDepth(sn,0) > 3:
+        # explode
+        sn = explode(sn,0)[2]
+        #  print(sn)
+
+    wasSplit,sn = split(sn)
+    if wasSplit:
+        # might need to reduce
+        sn = reduce(sn)
+    #  print(sn)
+    return sn
+    
+def p1(f):
+    # list of operations by priority
+    # 1. explode, this happens when the list is depth 4
+    #   any number to the left of the exploding pair gets the left element added to it
+    #   any number to the right of the exloding pair gets the right element added to it
+    #   the deletion og the pair always leaves a 0 in its place
+    # 2. split, this happens when a number exceeds 10
+    #   the number is replaced with a pair 11 becomes [11//2,ceil(11/2)]
+
+    # an add operation creates a adds the 2 operands to a new list [1,2] + [3,4] = [[1,2],[3,4]]
+    # a single list will never be longer than 2 elements
+    #  print(getDepth([[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]],0))
+    #  print(getDepth([[[[[9,8],1],2],3],4],0))
+    #  print(explode([[[[[9,8],1],2],3],4],0))
+    #  print(explode([7,[6,[5,[4,[3,2]]]]],0))
+    #  print(getDepth(explode([7,[6,[5,[4,[3,2]]]]],0)[2],0))
+    #  print(getDepth([[[[0,9],2],3],4],0))
+    #  print(split([[[[0,7],4],[15,[0,13]]],[1,1]])[1])
+    #  print(split(split([[[[0,7],4],[15,[0,13]]],[1,1]])[1])[1])
+    #  sn = [[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]
+    #  sn = reduce([[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]])
+    #  print(getDepth(sn,0))
+    #  print(explode(sn,0)[2])
+
+    numlist = [eval(line.strip('\n')) for line in f.readlines()]
+    #  for num in numlist:
+        #  print(num)
+
+    current = numlist[0]
+    numlist=numlist[1:]
+
+    while len(numlist) > 0:
+
+        current = [current,numlist[0]]
+        numlist = numlist[1:]
+
+        current = reduce(current)
+        print(current)
+    print(split(current))
+if __name__ == "__main__":
+    f = open("sinput","r")
+
+    p1(f)
+
+    f.close()
