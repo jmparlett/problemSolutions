@@ -14,9 +14,8 @@ void setio(string s){
 	// cin now reads from the input file instead of standard input
 }
 
-
 int main(){
-  setio("problemName");
-
-
+  setio("blist");
+  
+  
 }
