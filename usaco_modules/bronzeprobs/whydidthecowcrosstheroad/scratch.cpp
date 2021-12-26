@@ -27,7 +27,34 @@ void setio(string s){
 
 
 int main(){
-  setio("problemName");
+  setio("cowqueue");
+  
+  int n; cin >> n;
 
+  vector<pi> C; C.resize(n);
 
+  for(int i=0; i < n; i++){
+    cin >> C[i].first >> C[i].second; 
+  }
+
+  sort(all(C));
+
+  int t = 0;
+  for(auto p : C){
+    if(p.first > t){
+      t=(p.first+p.second);
+    } else {
+      t+=p.second;
+    }
+  }
+
+  cout << t << endl;
 }
+
+
+/*
+ * time at first cow is time of arrival + time to process
+ * time at next cow
+ *  if time of arrival is less than current time consumed then time += time to process
+ *  if time of arrival greater than current time consumed than time = time of arrival + time to process
+ */
