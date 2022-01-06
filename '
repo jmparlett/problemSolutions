@@ -1,0 +1,58 @@
+from math import ceil
+
+def explode(pair):
+    # pair[0] should be added to a left element and pair[1] to a right
+    return (pair[0],pair[1],0)
+
+def split(num):
+    return [num//2,ceil(num/2)]
+
+def reduce(sn,depth):
+    if isinstance(sn,int):
+        if sn > 10:
+            return reduce(split(sn),depth+1)
+        else:
+            return 0,0,sn
+
+    if depth==4:
+        return explode(sn)
+    
+    rsn = []
+    leftsum = 0
+    rightsum =0
+    for n in sn:
+        ls, rs, num = reduce(sn,depth+1)
+        # try to add to our left element
+        try:
+            rsn[0]+=ls
+        except Exception:
+            leftsum+=ls
+        # try to add to our right element
+        try:
+            rsn[1]+=rs
+        except Exception:
+            rightsum+=ls
+
+
+
+
+def p1(f):
+    # list of operations by priority
+    # 1. explode, this happens when the list is depth 4
+    #   any number to the left of the exploding pair gets the left element added to it
+    #   any number to the right of the exloding pair gets the right element added to it
+    #   the deletion og the pair always leaves a 0 in its place
+    # 2. split, this happens when a number exceeds 10
+    #   the number is replaced with a pair 11 becomes [11//2,ceil(11/2)]
+
+    # an add operation creates a adds the 2 operands to a new list [1,2] + [3,4] = [[1,2],[3,4]]
+    # a single list will never be longer than 2 elements
+    pass
+
+
+if __name__ == "__main__":
+    f = open("input","r")
+
+    p1(f)
+
+    f.close()
