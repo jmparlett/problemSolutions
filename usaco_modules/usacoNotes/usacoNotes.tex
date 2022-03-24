@@ -1,0 +1,63 @@
+\documentclass[14pt]{extreport}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{pgfplots}
+\usepackage{setspace}
+\usepackage{listings}
+\pgfplotsset{compat=1.17} 
+% \geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+\usepackage[margin=2cm]{geometry}
+\usepackage[most]{tcolorbox}
+\newtcolorbox{tb}[1][]{%
+  sharp corners,
+  enhanced,
+  colback=white,
+  height=6cm,
+  attach title to upper,
+  #1
+}
+
+%These setting will make the code areas look Pretty
+\lstset{
+	escapechar=~,
+	numbers=left, 
+	%numberstyle=\tiny, 
+	stepnumber=1, 
+	firstnumber=1,
+	%numbersep=5pt,
+	language=C,
+	% stringstyle=\itfamily,
+	%basicstyle=\footnotesize, 
+	showstringspaces=false,
+	frame=single,
+  upquote=true
+}
+
+% created 2022-March-23 %
+
+\title{usacoNotes}
+\author{Jonathan Parlett}
+
+\begin{document}
+\maketitle
+
+\section{Prefix Sums}
+
+The idea of prefix sums is useful when querying a range to figure a certain sum.
+
+We can enumerate all interval sums of a range by calculating the sum from the begining to any point in the the array.
+
+Given
+\[ A = [a_0, a_1, ..., a_n] \]
+
+The prefix sum array would be
+
+\[ P = [\sum_0^0, \sum_0^1, \sum_0^2, ..., \sum_0^k] \]
+
+Then interval sum is given by from $[s,e]$ can be obtained from $P[e] - P[s]$.
+
+\end{document}
